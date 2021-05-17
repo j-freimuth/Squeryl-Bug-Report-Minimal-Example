@@ -35,7 +35,7 @@ object SquerylBugExample extends App {
     val joined1 = join(product, productCustomer.leftOuter) { (product, productCustomer) =>
 
       select(product, productCustomer)
-        .on(product.id === productCustomer.get.productId)
+        .on(product.id === productCustomer.map(_.productId))
     }.toList
 
     /* Joining both tables directly works */
@@ -47,7 +47,7 @@ object SquerylBugExample extends App {
 
       where(product.id === 1)
       .select(product, productCustomer)
-        .on(product.id === productCustomer.get.productId)
+        .on(product.id === productCustomer.map(_.productId))
     }.toList
 
     /* With query works as long as no null values are encountered */
@@ -56,7 +56,7 @@ object SquerylBugExample extends App {
     val joined3 = join(product, productCustomerQuery.leftOuter){ (product, productCustomer) =>
 
       select(product, productCustomer)
-        .on(product.id === productCustomer.get.productId)
+        .on(product.id === productCustomer.map(_.productId))
     }.toList
 
     /* Throws a mapping error as soon as null values are encountered */
